@@ -15,9 +15,19 @@ class Student(object):
         - `name`: Name of the student
         """
         self.name = name
+        self._grades = {}
 
     def add(self, subject, grade):
-        pass
+        self._grades.setdefault(subject, []).append(grade)
+
+    def grades(self, subject):
+        return self._grades[subject]
 
     def average(self, subject):
-        return 4
+        try:
+            grades=self._grades[subject]
+        except KeyError as e:
+            raise ValueError("wrong subject")
+
+        s=sum(grades)
+        return float(s)/len(grades)
