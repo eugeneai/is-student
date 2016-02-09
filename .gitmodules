@@ -1,0 +1,3 @@
+[submodule "static"]
+	path = static
+	url = https://github.com/eugeneai/startbootstrap-freelancer.git
