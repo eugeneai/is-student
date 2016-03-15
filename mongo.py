@@ -2,7 +2,7 @@ from pymongo import *
 import datetime
 from interfaces import *
 from zope.interface import implementer
-from zope.component import adapter, getGlobalSiteManager
+#from zope.component import adapter
 from bson.objectid import ObjectId
 
 @implementer(IMongoDBStorage)
@@ -22,9 +22,9 @@ class MongoDBStorage(object):
         o.load(self.db, key, obj)
         return obj
 
-@implementer(IMongoDBStorable)
-@adapter(IStudent)
-class IStudentToIMongoDBAdapter(object):
+#@implementer(IMongoDBStorable)
+#@adapter(IStudent)
+class AdapterOfIStudentToIMongo(object):
     def __init__(self, student):
         self.student=student
 
@@ -44,8 +44,7 @@ class IStudentToIMongoDBAdapter(object):
         stub.name=stud["name"]
         stub._grades=stud["grades"]
 
-GSM=getGlobalSiteManager()
-GSM.registerAdapter(IStudentToIMongoDBAdapter)
+db=MongoDBStorage()
 
 def test_mongo():
     """Test mongo
@@ -73,6 +72,10 @@ def test_mongo():
     print (posts.find_one({"author": "Eliot"}))
 
     print (str(post_id))
+
+assert IStorage.implementedBy(MongoDBStorage)
+assert IMongoDBStorage.implementedBy(MongoDBStorage)
+
 
 if __name__=="__main__":
     test_mongo()

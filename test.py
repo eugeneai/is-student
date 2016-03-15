@@ -1,8 +1,10 @@
 from components import Student
-from interfaces import IStudent, IStorage
-from mongo import *
+from interfaces import IStudent, IStorage, IMongoDBStorage
+#from mongo import *
+from zope.configuration.xmlconfig import xmlconfig
+from zope.component import getUtility
 
-
+xmlconfig(open("configure.zcml"))
 
 def test1():
     assert IStudent.implementedBy(Student)
@@ -20,20 +22,13 @@ def test1():
     return ivanov
 
 def test_db1():
-    assert IStorage.implementedBy(MongoDBStorage)
-    assert IMongoDBStorage.implementedBy(MongoDBStorage)
     ivanov=test1()
-    db=MongoDBStorage()
-    #oldsize=db.size()
+    db=getUtility(IMongoDBStorage, name="database")
     id_ivanov=db.store(ivanov)
-    #assert db.size()==oldsize+1
     i=db.get(id_ivanov, Student)
     print (ivanov)
     print (i)
     assert i.equals(ivanov)
-    #db.remove(id_ivanov)
-    #assert db.size()==oldsize
-
 
 if __name__=="__main__":
     print ()
