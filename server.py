@@ -14,6 +14,13 @@ def hello(name):
 #    return "Hello,", name, "!" # +7 914 870 67 54
     return {"name":name, "phone":"+7 (914) 870 67-54"}
 
+@route('/edit/<student_id>')
+@view('student.pt')
+def edit_get(student_id):
+    return {"name":student_id, "phone":"+7 (914) 870 67-54"}
+
+# ----------- STATIC ROUTES ---------------------- FIXME Better shortening them to one ---
+
 @route('/static/<filename:path>')
 def send_static(filename):
     return static_file(filename,
