@@ -1,5 +1,8 @@
 from interfaces import IStudent, IStorage, IDctionaryStorage
 from zope.interface import implementer, adapter
+from zope.component import getUtility
+
+
 import sqlite3
 
 
@@ -52,40 +55,14 @@ class Student(object):
         return "Student(name={}, grades={})".format(
             self.name, self._grades)
 
-"""
-@implementer(IDctionaryStorage)
-class DictionaryStorage(object):
-    def __init__(self):
-        self.storage={}
-
-    def put(self, obj):
-        key=len(self.storage)
-        self.storage[key]=obj
-        return key
-
-    def get(self, key):
-        return self.storage[key]
-
-    def remove(self, key):
-        del self.storage[key]
-
-    def size(self):
-        return len(self.storage)
-
-@implementer(ISQLiteStorage)
-@adapts(IStudent)
-class SQLiteStudentStorer(object):
-    def __init__(self, student):
-        self.student=student
-        self.connect()
-
-    def put(self, obj):
-
-
-    def get(self, key):
-
-    def remove(self, key):
-
-    def size(self):
-        ...
-"""
+#@implementer(ILoadEvent)
+#@adapter(IID)
+class StudentLoader(object):
+    def __init__(self, obj):
+        self.obj=obj
+    def storage(self):
+        return getUtility(IStorage, name="database")
+    def load(self):
+        return self.storage().get(self.obj.id, Student)
+    def store(self):
+        return self.storage().store(self.obj)

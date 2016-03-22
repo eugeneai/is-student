@@ -1,9 +1,12 @@
 from bottle import *
 import os, os.path
 from components import Student
-from interfaces import IStorage, IMongoDBStorage
+from interfaces import IStorage, IMongoDBStorage, IID, ILoadEvent, IStoreEvent
 
-from zope.component import getUtility
+from zope.interface import directlyProvides, implementer
+
+
+from zope.component import getUtility, subscribers
 from zope.configuration.xmlconfig import xmlconfig
 xmlconfig(open("configure.zcml"))
 
@@ -20,11 +23,22 @@ def hello(name):
 #    return "Hello,", name, "!" # +7 914 870 67 54
     return {"name":name, "phone":"+7 (914) 870 67-54"}
 
+@implementer(IID)
+class id_holder(object):
+    def __init__(self, id):
+        self.id=id
+
+def load_object(id):
+    oid=id_holder(id)
+    obj=subscribers([oid], ILoadEvent)[0].load()
+    return obj
+
 @route('/edit/<student_id>')
 @view('student.pt')
 def edit_get(student_id):
-    storage=getUtility(IStorage, name="database")
-    student=storage.get(student_id, Student)
+    #storage=getUtility(IStorage, name="database")
+    #student=storage.get(student_id, Student)
+    student=load_object(student_id)
     message=request.query.get("message",None)
     return {"id":student_id,
             "name":student.name,
@@ -34,11 +48,12 @@ def edit_get(student_id):
 
 @route('/edit/<student_id>', method="POST")
 def edit_post(student_id):
+    student=load_object(student_id)
+
     forms=request.forms
     sid=forms.get("id")
     name=forms.get("name")
-    storage=getUtility(IStorage, name="database")
-    student=storage.get(student_id, Student)
+
     student.name=name
     keys=forms.keys()
     response.status = 303
@@ -53,7 +68,7 @@ def edit_post(student_id):
                 return {}
             grade_name=k.replace("grades_","")
             student.replace_grades(grade_name, vl)
-    new_id=storage.store(student)
+    new_id=subscribers([student],IStoreEvent)[0].store()
     response.set_header('Location', '/edit/'+new_id+"?message=Student+updated.")
     return {}  # Enter the body here
 

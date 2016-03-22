@@ -55,3 +55,18 @@ class IMongoDBStorable(Interface):
 
     def load(db, key, obj):
         """Convert data into a class_ instance"""
+
+class IEvent(Interface):
+    pass
+
+class ILoadEvent(IEvent):
+    """Event that's rasing when an entity must
+    be loacated and loaded by its key."""
+
+class IStoreEvent(IEvent):
+    """Event that's rasing when an object must be
+    stored in a database."""
+
+class IID(Interface):
+    """Marker interface for key identifiers,
+    that refer an object in a database."""

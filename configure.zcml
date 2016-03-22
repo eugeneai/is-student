@@ -15,5 +15,16 @@
     provides="interfaces.IStorage"
     />
 
+<subscriber
+    provides="interfaces.ILoadEvent"
+    factory="components.StudentLoader"
+    for="interfaces.IID"
+    />
+
+<subscriber
+    provides="interfaces.IStoreEvent"
+    factory="components.StudentLoader"
+    for="interfaces.IStudent"
+    />
 
 </configure>
