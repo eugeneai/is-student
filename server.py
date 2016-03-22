@@ -1,5 +1,11 @@
 from bottle import *
 import os, os.path
+from components import Student
+from interfaces import IStorage, IMongoDBStorage
+
+from zope.component import getUtility
+from zope.configuration.xmlconfig import xmlconfig
+xmlconfig(open("configure.zcml"))
 
 CURRD=os.getcwd()
 
@@ -17,7 +23,39 @@ def hello(name):
 @route('/edit/<student_id>')
 @view('student.pt')
 def edit_get(student_id):
-    return {"name":student_id, "phone":"+7 (914) 870 67-54"}
+    storage=getUtility(IStorage, name="database")
+    student=storage.get(student_id, Student)
+    message=request.query.get("message",None)
+    return {"id":student_id,
+            "name":student.name,
+            "grades":student.grades,
+            "request":request,
+            "message":message}
+
+@route('/edit/<student_id>', method="POST")
+def edit_post(student_id):
+    forms=request.forms
+    sid=forms.get("id")
+    name=forms.get("name")
+    storage=getUtility(IStorage, name="database")
+    student=storage.get(student_id, Student)
+    student.name=name
+    keys=forms.keys()
+    response.status = 303
+    for k in keys:
+        if k.startswith("grades_"):
+            v=forms.get(k)
+            vl=v.strip().split(',')
+            try:
+                vl=[int(g) for g in vl]
+            except ValueError:
+                response.set_header('Location', '/edit/'+student_id+"?message=Error+in+a+grade+list.")
+                return {}
+            grade_name=k.replace("grades_","")
+            student.replace_grades(grade_name, vl)
+    new_id=storage.store(student)
+    response.set_header('Location', '/edit/'+new_id+"?message=Student+updated.")
+    return {}  # Enter the body here
 
 # ----------- STATIC ROUTES ---------------------- FIXME Better shortening them to one ---
 

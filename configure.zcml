@@ -12,6 +12,7 @@
 <utility
     component="mongo.db"
     name="database"
+    provides="interfaces.IStorage"
     />
 
 

@@ -24,8 +24,14 @@ class Student(object):
     def add(self, subject, grade):
         self._grades.setdefault(subject, []).append(grade)
 
-    def grades(self, subject):
-        return self._grades[subject]
+    def replace_grades(self, subject, grades):
+        self._grades[subject]=grades
+
+    def grades(self, subject=None):
+        if subject==None:
+            return self._grades
+        else:
+            return self._grades[subject]
 
     def average(self, subject):
         try:
