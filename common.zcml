@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="utf-8"?>
+<configure xmlns='http://namespaces.zope.org/zope'
+           i18n_domain="zope">
+<include package="zope.component" file="meta.zcml" />
+
+<adapter
+    factory="mongo.AdapterOfIStudentToIMongo"
+    for="interfaces.IStudent"
+    provides="interfaces.IMongoDBStorable"
+    />
+
+<utility
+    component="mongo.db"
+    name="database"
+    provides="interfaces.IStorage"
+    />
+
+</configure>

@@ -8,7 +8,7 @@ from zope.interface import directlyProvides, implementer
 
 from zope.component import getUtility
 from zope.configuration.xmlconfig import xmlconfig
-xmlconfig(open("configure.zcml"))
+xmlconfig(open("remote.zcml"))
 
 CURRD=os.getcwd()
 

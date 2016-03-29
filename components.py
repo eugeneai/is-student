@@ -55,8 +55,6 @@ class Student(object):
         return "Student(name={}, grades={})".format(
             self.name, self._grades)
 
-#@implementer(ILoadEvent)
-#@adapter(IID)
 class StudentLoader(object):
     def __init__(self, obj):
         self.obj=obj
@@ -76,3 +74,7 @@ def load_object(id):
     oid=id_holder(id)
     obj=subscribers([oid], ILoadEvent)[0].load()
     return obj
+
+def load_default_config():
+    from zope.configuration.xmlconfig import xmlconfig
+    xmlconfig(open("configure.zcml"))

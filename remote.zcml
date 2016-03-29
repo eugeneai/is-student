@@ -5,13 +5,13 @@
 
 <subscriber
     provides="interfaces.ILoadEvent"
-    factory="components.StudentLoader"
+    factory="remote.StudentLoader"
     for="interfaces.IID"
     />
 
 <subscriber
     provides="interfaces.IStoreEvent"
-    factory="components.StudentLoader"
+    factory="remote.StudentLoader"
     for="interfaces.IStudent"
     />
 

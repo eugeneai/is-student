@@ -1,10 +1,10 @@
-from components import Student
+from components import Student, load_object
 from interfaces import IStudent, IStorage, IMongoDBStorage
 #from mongo import *
 from zope.configuration.xmlconfig import xmlconfig
 from zope.component import getUtility
 
-xmlconfig(open("configure.zcml"))
+xmlconfig(open("remote.zcml"))
 
 def test1():
     assert IStudent.implementedBy(Student)
@@ -30,8 +30,8 @@ def test_db1():
     print (i)
     assert i.equals(ivanov)
 
-def get_student():
-
+def get_student(id):
+    return load_object(id)
 
 def test_remote():
     import rpyc
@@ -39,6 +39,7 @@ def test_remote():
     test=conn.modules.test
     stud=test.get_student('56f11bf572bb0a1e27160741')
     print (stud)
+    print (type(stud))
 
 if __name__=="__main__":
     print ()
