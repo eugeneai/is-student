@@ -1,3 +1,4 @@
 zope.component [zcml]
 bottle
 pymongo
+rpyc

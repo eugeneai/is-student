@@ -1,6 +1,6 @@
-from interfaces import IStudent, IStorage, IDctionaryStorage
+from interfaces import IStudent, IStorage, IDctionaryStorage, ILoadEvent, IStoreEvent, IID
 from zope.interface import implementer, adapter
-from zope.component import getUtility
+from zope.component import getUtility, subscribers
 
 
 import sqlite3
@@ -66,3 +66,13 @@ class StudentLoader(object):
         return self.storage().get(self.obj.id, Student)
     def store(self):
         return self.storage().store(self.obj)
+
+@implementer(IID)
+class id_holder(object):
+    def __init__(self, id):
+        self.id=id
+
+def load_object(id):
+    oid=id_holder(id)
+    obj=subscribers([oid], ILoadEvent)[0].load()
+    return obj

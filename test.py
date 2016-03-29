@@ -23,16 +23,27 @@ def test1():
 
 def test_db1():
     ivanov=test1()
-    db=getUtility(IMongoDBStorage, name="database")
+    db=getUtility(IStorage, name="database")
     id_ivanov=db.store(ivanov)
     i=db.get(id_ivanov, Student)
     print (ivanov)
     print (i)
     assert i.equals(ivanov)
 
+def get_student():
+
+
+def test_remote():
+    import rpyc
+    conn=rpyc.classic.connect('localhost')
+    test=conn.modules.test
+    stud=test.get_student('56f11bf572bb0a1e27160741')
+    print (stud)
+
 if __name__=="__main__":
     print ()
-    test_db1()
+    #test_db1()
+    test_remote()
     print ()
     print ("Ok")
     quit()

@@ -1,12 +1,12 @@
 from bottle import *
 import os, os.path
-from components import Student
+from components import Student, load_object
 from interfaces import IStorage, IMongoDBStorage, IID, ILoadEvent, IStoreEvent
 
 from zope.interface import directlyProvides, implementer
 
 
-from zope.component import getUtility, subscribers
+from zope.component import getUtility
 from zope.configuration.xmlconfig import xmlconfig
 xmlconfig(open("configure.zcml"))
 
@@ -22,16 +22,6 @@ def index():
 def hello(name):
 #    return "Hello,", name, "!" # +7 914 870 67 54
     return {"name":name, "phone":"+7 (914) 870 67-54"}
-
-@implementer(IID)
-class id_holder(object):
-    def __init__(self, id):
-        self.id=id
-
-def load_object(id):
-    oid=id_holder(id)
-    obj=subscribers([oid], ILoadEvent)[0].load()
-    return obj
 
 @route('/edit/<student_id>')
 @view('student.pt')
